@@ -8,4 +8,4 @@ class ReviewModel(models.Model):
     rating = models.IntegerField()
 
     def __str__(self):
-        return f"Name: {self.username}, Rating: {self.rating}"
+        return f"Name: {self.username}, (Rating: {self.rating})"
