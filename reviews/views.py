@@ -4,6 +4,7 @@ from django.views import View
 from django.views.generic.base import TemplateView
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView, CreateView
+from django.urls import reverse
 # Create your views here.
 
 
@@ -56,15 +57,18 @@ class DetailReviewView(DetailView):
     template_name = "reviews/detail_review.html"
     model = ReviewModel
     context_object_name = "single_review"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_object = self.object
+        context["fav_one"] = self.request.session.get("favorite_review") == current_object.id
+        return context
+    
 
-
-
-
-
-
-
-
-
+class AddFavoriteView(View):
+    def post(self,request):
+        fav_review_id = int(request.POST["review_id"])
+        request.session["favorite_review"] = fav_review_id
+        return HttpResponseRedirect("/reviews/" + str(fav_review_id))
 # def review(request):
 #     if request.method == "POST":
 #         form = ReviewForm(request.POST)

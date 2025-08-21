@@ -11,4 +11,13 @@
         {{single_review.review_text}}
     </p>
     <i>Rating : {{single_review.rating}}</i>
+    {% if fav_one %}
+    <p>This is my Favorite Review</p>
+    {% else %}
+    <form action="/reviews/favorite" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name = "review_id" value="{{single_review.id}}">
+        <button>Favorite</button>
+    </form>
+    {% endif %}
 {% endblock body_block %}
