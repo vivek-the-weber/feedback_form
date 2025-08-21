@@ -57,18 +57,30 @@ class DetailReviewView(DetailView):
     template_name = "reviews/detail_review.html"
     model = ReviewModel
     context_object_name = "single_review"
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         current_object = self.object
-        context["fav_one"] = self.request.session.get("favorite_review") == current_object.id
+        if str(current_object.id) in str(self.request.session.get("favorite_review")):
+            context["fav_one"] = True
+        else:
+            context["fav_one"] = False
         return context
     
 
 class AddFavoriteView(View):
     def post(self,request):
-        fav_review_id = int(request.POST["review_id"])
-        request.session["favorite_review"] = fav_review_id
+        fav_review_id = request.POST["review_id"]
+        request.session["favorite_review"] = str(request.session.get("favorite_review")) +" "+ fav_review_id
         return HttpResponseRedirect("/reviews/" + str(fav_review_id))
+class RemoveFavoriteView(View):
+    def post(self,request):
+        fav_review_id_remove = request.POST["review_id"]
+        splited_session = request.session["favorite_review"].split()
+        for remove_fav in splited_session:
+            if remove_fav == fav_review_id_remove:
+                request.session["favorite_review"] = request.session["favorite_review"].replace(str(fav_review_id_remove),"")
+        return HttpResponseRedirect("/reviews/" + str(fav_review_id_remove))
 # def review(request):
 #     if request.method == "POST":
 #         form = ReviewForm(request.POST)

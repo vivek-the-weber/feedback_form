@@ -13,6 +13,11 @@
     <i>Rating : {{single_review.rating}}</i>
     {% if fav_one %}
     <p>This is my Favorite Review</p>
+    <form action="/reviews/notfav" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name = "review_id" value="{{single_review.id}}">
+        <button>Remove From Favorite</button>
+    </form>
     {% else %}
     <form action="/reviews/favorite" method="POST">
         {% csrf_token %}
